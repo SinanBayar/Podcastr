@@ -8,6 +8,7 @@ import { useAction, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { v4 as uuidv4 } from "uuid";
 import { useUploadFiles } from "@xixixao/uploadstuff/react";
+import { useToast } from "@/hooks/use-toast";
 
 // A new hook to define Logic for podcast generation
 const useGeneratePodcast = ({
@@ -17,6 +18,7 @@ const useGeneratePodcast = ({
   voicePrompt,
 }: GeneratePodcastProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
 
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
 
@@ -31,8 +33,11 @@ const useGeneratePodcast = ({
     setIsGenerating(true);
     setAudioUrl("");
 
-    if (!voicePrompt) {
-      // TODO: show an error message with toast
+    if (!voicePrompt || !voiceType) {
+      toast({
+        title:
+          "Please provide a AI prompt and a voice type to generate a podcast",
+      });
       return setIsGenerating(false);
     }
     try {
@@ -55,10 +60,15 @@ const useGeneratePodcast = ({
       const audioUrl = await getAudioUrl({ storageId });
       setAudioUrl(audioUrl!);
       setIsGenerating(false);
-      // TODO: show a success message
+      toast({
+        title: "Podcast generated successfully",
+      });
     } catch (error) {
       console.log("Error generating podcast", error);
-      // TODO: show an error message with toast
+      toast({
+        title: "Error creating a podcast",
+        variant: "destructive",
+      });
       setIsGenerating(false);
     }
   };
