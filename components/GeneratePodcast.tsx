@@ -4,6 +4,8 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Loader } from "lucide-react";
 import { useState } from "react";
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 // A new hook to define Logic for podcast generation
 const useGeneratePodcast = ({
@@ -14,6 +16,9 @@ const useGeneratePodcast = ({
 }: GeneratePodcastProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // Getting openAI function using useAction hook
+  const getPodcastAudio = useAction(api.openai.generateAudioAction);
+
   const generatePodcast = async () => {
     setIsGenerating(true);
     setAudioUrl("");
@@ -22,10 +27,10 @@ const useGeneratePodcast = ({
       return setIsGenerating(false);
     }
     try {
-      // const response = await getPodcastAudio({
-      //   voice: voiceType,
-      //   text: voicePrompt
-      // })
+      const response = await getPodcastAudio({
+        voice: voiceType,
+        input: voicePrompt,
+      });
     } catch (error) {
       console.log("Error generating podcast", error);
       // TODO: show an error message with toast
