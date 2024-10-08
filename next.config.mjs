@@ -7,6 +7,11 @@ const nextConfig = {
             hostname: "lovely-flamingo-139.convex.cloud",
             pathname: "**",
           },
+          {
+            protocol: "https",
+            hostname: "fearless-husky-341.convex.cloud",
+            pathname: "**",
+          },
         ],
       },
 };

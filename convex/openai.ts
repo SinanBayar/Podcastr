@@ -9,6 +9,7 @@ const openai = new OpenAI({
 });
 // Do not forget to save OPENAI_API_KEY on Convex
 
+// Generating audio with openAI
 export const generateAudioAction = action({
   args: { input: v.string(), voice: v.string() },
   handler: async (_, { input, voice }) => {

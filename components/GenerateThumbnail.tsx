@@ -1,3 +1,5 @@
+import Image from "next/image";
+import Link from "next/link";
 import { ChangeEvent, useRef, useState } from "react";
 import { GenerateThumbnailProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -6,7 +8,11 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Input } from "./ui/input";
 import { Loader } from "lucide-react";
-import Image from "next/image";
+import { useToast } from "@/hooks/use-toast";
+import { api } from "@/convex/_generated/api";
+import { useUploadFiles } from "@xixixao/uploadstuff/react";
+import { useMutation } from "convex/react";
+
 
 const GenerateThumbnail = ({
   imageUrl,
@@ -18,10 +24,61 @@ const GenerateThumbnail = ({
   const [isAiThumbnail, setIsAiThumbnail] = useState(true);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const imageRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
-  const handleImage = async (blob: Blob, fileName: string) => {};
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const { startUpload } = useUploadFiles(generateUploadUrl);
+
+  const getImageUrl = useMutation(api.podcasts.getUrl);
+
+  // Uploading and getting URL of image from Convex
+  const handleImage = async (blob: Blob, fileName: string) => {
+    setIsImageLoading(true);
+    setImageUrl("");
+    try {
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      // Upload image file to Convex
+      const uploaded = await startUpload([file]);
+      const storageId = (uploaded[0].response as any).storageId;
+      setImageStorageId(storageId);
+
+      // Getting URL of image from Convex
+      const imageUrl = await getImageUrl({ storageId });
+      setImageUrl(imageUrl!);
+      setIsImageLoading(false);
+      toast({
+        title: "Thumbnail generated successfully",
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error generating thumbnail",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Generate image using AI for thumbnail
   const generateImage = async () => {};
-  const uploadImage = async (e: ChangeEvent<HTMLInputElement>) => {};
+
+  // Upload custom image for thumbnail
+  const uploadImage = async (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    try {
+      const files = e.target.files;
+      if (!files) return;
+      const file = files[0];
+      const blob = await file.arrayBuffer().then((ab) => new Blob([ab]));
+      handleImage(blob, file.name);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error uploading image",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <>
@@ -105,13 +162,15 @@ const GenerateThumbnail = ({
       )}
       {imageUrl && (
         <div className="flex-center w-full">
-          <Image
-            src={imageUrl}
-            alt="thumbnail"
-            width={200}
-            height={200}
-            className="mt-5"
-          />
+          <Link href={`${imageUrl}`} target="_blank">
+            <Image
+              src={imageUrl}
+              alt="thumbnail"
+              width={200}
+              height={200}
+              className="mt-5"
+            />
+          </Link>
         </div>
       )}
     </>
