@@ -11,8 +11,8 @@ import { Loader } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/convex/_generated/api";
 import { useUploadFiles } from "@xixixao/uploadstuff/react";
-import { useMutation } from "convex/react";
-
+import { useAction, useMutation } from "convex/react";
+import { v4 as uuidv4 } from "uuid";
 
 const GenerateThumbnail = ({
   imageUrl,
@@ -30,6 +30,9 @@ const GenerateThumbnail = ({
   const { startUpload } = useUploadFiles(generateUploadUrl);
 
   const getImageUrl = useMutation(api.podcasts.getUrl);
+
+  // Getting openAI function using useAction hook
+  const handleGenerateThumbnail = useAction(api.openai.generateThumbnailAction);
 
   // Uploading and getting URL of image from Convex
   const handleImage = async (blob: Blob, fileName: string) => {
@@ -60,7 +63,25 @@ const GenerateThumbnail = ({
   };
 
   // Generate image using AI for thumbnail
-  const generateImage = async () => {};
+  const generateImage = async () => {
+    setIsImageLoading(true);
+    setImageUrl("");
+
+    try {
+      const response = await handleGenerateThumbnail({
+        prompt: imagePrompt,
+      });
+      const blob = new Blob([response], { type: "image/png" });
+      const fileName = `thumbnail-${uuidv4()}.png`;
+      handleImage(blob, fileName);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error generating thumbnail",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Upload custom image for thumbnail
   const uploadImage = async (e: ChangeEvent<HTMLInputElement>) => {

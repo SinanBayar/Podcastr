@@ -22,3 +22,25 @@ export const generateAudioAction = action({
     return buffer;
   },
 });
+
+// Generatin image with openAI
+export const generateThumbnailAction = action({
+  args: { prompt: v.string() },
+  handler: async (_, { prompt }) => {
+    const image = await openai.images.generate({
+      model: "dall-e-3",
+      prompt,
+      n: 1,
+      size: "1024x1024",
+      quality: "standard",
+    });
+    const url = image.data[0].url;
+    if (!url) {
+      throw new Error("Error generating thumbnail");
+    }
+    const imageResponse = await fetch(url);
+
+    const buffer = await imageResponse.arrayBuffer();
+    return buffer;
+  },
+});
