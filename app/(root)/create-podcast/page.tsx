@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -90,7 +89,7 @@ const CreatePodcast = () => {
                   <FormControl>
                     <Input
                       className="input-class focus-visible:ring-offset-orange-1"
-                      placeholder="deneme"
+                      placeholder="Write a title"
                       {...field}
                     />
                   </FormControl>
