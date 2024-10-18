@@ -36,7 +36,7 @@ const useGeneratePodcast = ({
     if (!voicePrompt || !voiceType) {
       toast({
         title:
-          "Please provide a AI prompt and a voice type to generate a podcast",
+          "Please provide an AI prompt and a voice type to generate a podcast",
       });
       return setIsGenerating(false);
     }
@@ -99,7 +99,7 @@ const GeneratePodcast = (props: GeneratePodcastProps) => {
       <div className="mt-11 w-full max-w-[200px]">
         <Button
           onClick={generatePodcast}
-          type="submit"
+          type="button"
           className="text-16 bg-orange-1 py-4 font-extrabold text-white-1 "
         >
           {isGenerating ? (

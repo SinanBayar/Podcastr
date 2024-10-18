@@ -67,6 +67,14 @@ const GenerateThumbnail = ({
     setIsImageLoading(true);
     setImageUrl("");
 
+    if (!imagePrompt) {
+      toast({
+        title:
+          "Please provide an AI prompt to generate thumbnail",
+      });
+      return setIsImageLoading(false);
+    }
+
     try {
       const response = await handleGenerateThumbnail({
         prompt: imagePrompt,
@@ -138,7 +146,7 @@ const GenerateThumbnail = ({
           <div className="w-full max-w-[200px]">
             <Button
               onClick={generateImage}
-              type="submit"
+              type="button"
               className="text-16 bg-orange-1 py-4 font-extrabold text-white-1 "
             >
               {isImageLoading ? (
