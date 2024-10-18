@@ -4,7 +4,6 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,11 +24,14 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
-
 import GeneratePodcast from "@/components/GeneratePodcast";
 import GenerateThumbnail from "@/components/GenerateThumbnail";
 import { Loader } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
 
 const voiceCategories = ["alloy", "shimmer", "nova", "echo", "fable", "onyx"];
 
@@ -39,22 +41,22 @@ const formSchema = z.object({
 });
 
 const CreatePodcast = () => {
+  const router = useRouter();
   const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | null>(
     null
   );
   const [imagePrompt, setImagePrompt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-
   const [audioStorageId, setAudioStorageId] = useState<Id<"_storage"> | null>(
     null
   );
   const [audioDuration, setAudioDuration] = useState(0);
   const [audioUrl, setAudioUrl] = useState("");
-
   const [voicePrompt, setVoicePrompt] = useState("");
   const [voiceType, setVoiceType] = useState<string | null>(null);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  const createPodcast = useMutation(api.podcasts.createPodcast);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,14 +66,47 @@ const CreatePodcast = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      setIsSubmitting(true);
+      if (!audioUrl || !imageUrl || !voiceType) {
+        toast({
+          title: "Please generate audio and image",
+        });
+        setIsSubmitting(false);
+        throw new Error("Please generate audio and image");
+      }
+      await createPodcast({
+        podcastTitle: data.podcastTitle,
+        podcastDescription: data.podcastDescription,
+        audioUrl,
+        imageUrl,
+        voicePrompt,
+        imagePrompt,
+        voiceType,
+        audioDuration,
+        views: 0,
+        audioStorageId: audioStorageId!,
+        imageStorageId: imageStorageId!,
+      });
+      toast({
+        title: "Podcast created successfully",
+      });
+      setIsSubmitting(false);
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <section className="mt-10 flex flex-col">
       <h1 className="text-20 font-bold text-white-1">Create Podcast</h1>
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -97,7 +132,6 @@ const CreatePodcast = () => {
                 </FormItem>
               )}
             />
-
             <div className="flex flex-col gap-2.5">
               <Label className="text-16 font-bold text-white-1">
                 Select AI Voice
@@ -130,7 +164,6 @@ const CreatePodcast = () => {
                 )}
               </Select>
             </div>
-
             <FormField
               control={form.control}
               name="podcastDescription"
@@ -151,7 +184,6 @@ const CreatePodcast = () => {
               )}
             />
           </div>
-
           <div className="flex flex-col pt-10">
             <GeneratePodcast
               setAudioStorageId={setAudioStorageId}
