@@ -1,5 +1,6 @@
 "use client";
 
+import EmptyState from "@/components/EmptyState";
 import PodcastCard from "@/components/PodcastCard";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -64,7 +65,11 @@ const PodcastDetails = ({
             )}
           </div>
         ) : (
-          <h1 className="text-white-1">Empty</h1>
+          <EmptyState
+            title="No similar podcasts found"
+            buttonLink="/discover"
+            buttonText="Discover more podcasts"
+          />
         )}
       </section>
     </section>
