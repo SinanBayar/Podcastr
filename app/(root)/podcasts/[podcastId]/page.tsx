@@ -1,6 +1,7 @@
 "use client";
 
 import EmptyState from "@/components/EmptyState";
+import LoaderSpinner from "@/components/LoaderSpinner";
 import PodcastCard from "@/components/PodcastCard";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -16,6 +17,8 @@ const PodcastDetails = ({
   const similarPodcasts = useQuery(api.podcasts.getPodcastsByVoiceType, {
     podcastId,
   });
+
+  if (!similarPodcasts || !podcast) return <LoaderSpinner />;
 
   return (
     <section className="flex flex-col w-full">
