@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+// This mutation is required to generate the url after uploading the file to the storage.
 export const getUrl = mutation({
   args: {
     storageId: v.id("_storage"),
@@ -10,6 +11,7 @@ export const getUrl = mutation({
   },
 });
 
+// Create podcast mutation
 export const createPodcast = mutation({
   args: {
     podcastTitle: v.string(),
@@ -50,8 +52,39 @@ export const createPodcast = mutation({
   },
 });
 
+// This query will get the podcasts based on the views of the podcast , which we are showing in the Trending Podcasts section.
 export const getTrendingPodcasts = query({
   handler: async (ctx) => {
     return await ctx.db.query("podcasts").order("desc").collect();
+  },
+});
+
+// This query will get the podcast by the podcastId.
+export const getPodcastById = query({
+  args: {
+    podcastId: v.id("podcasts"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.podcastId);
+  },
+});
+
+// This query will get all the podcasts based on the voiceType of the podcast , which we are showing in the Similar Podcasts section.
+export const getPodcastsByVoiceType = query({
+  args: {
+    podcastId: v.id("podcasts"),
+  },
+  handler: async (ctx, args) => {
+    const podcast = await ctx.db.get(args.podcastId);
+
+    return await ctx.db
+      .query("podcasts")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("voiceType"), podcast?.voiceType),
+          q.neq(q.field("_id"), args.podcastId)
+        )
+      )
+      .collect();
   },
 });
