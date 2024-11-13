@@ -28,8 +28,4 @@ export default defineSchema({
     clerkId: v.string(),
     name: v.string(),
   }),
-  tasks: defineTable({
-    text: v.string(),
-    isCompleted: v.boolean(),
-  }),
 });
