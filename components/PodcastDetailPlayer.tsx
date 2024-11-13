@@ -4,6 +4,9 @@ import { PodcastDetailPlayerProps } from "@/types";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import LoaderSpinner from "./LoaderSpinner";
 
@@ -20,11 +23,22 @@ const PodcastDetailPlayer = ({
   authorId,
 }: PodcastDetailPlayerProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const deletePodcast = useMutation(api.podcasts.deletePodcast);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handlePlay = () => {};
 
-  const handleDelete = () => {};
+  const handleDelete = async () => {
+    try {
+      await deletePodcast({ podcastId, imageStorageId, audioStorageId });
+      toast({ title: "Podcast deleted" });
+      router.push("/");
+    } catch (error) {
+      console.error("Error deleting podcast", error);
+      toast({ title: "Error deleting podcast", variant: "destructive" });
+    }
+  };
 
   if (!imageUrl || !authorImageUrl) return <LoaderSpinner />;
 
