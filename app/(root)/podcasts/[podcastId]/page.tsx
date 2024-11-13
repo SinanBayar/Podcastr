@@ -1,22 +1,27 @@
 "use client";
 
-import EmptyState from "@/components/EmptyState";
-import LoaderSpinner from "@/components/LoaderSpinner";
-import PodcastCard from "@/components/PodcastCard";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
+import EmptyState from "@/components/EmptyState";
+import LoaderSpinner from "@/components/LoaderSpinner";
 import Image from "next/image";
+import PodcastCard from "@/components/PodcastCard";
+import PodcastDetailPlayer from "@/components/PodcastDetailPlayer";
 
 const PodcastDetails = ({
   params: { podcastId },
 }: {
   params: { podcastId: Id<"podcasts"> };
 }) => {
+  const { user } = useUser();
   const podcast = useQuery(api.podcasts.getPodcastById, { podcastId });
   const similarPodcasts = useQuery(api.podcasts.getPodcastsByVoiceType, {
     podcastId,
   });
+
+  const isOwner = user?.id === podcast?.authorId;
 
   if (!similarPodcasts || !podcast) return <LoaderSpinner />;
 
@@ -34,6 +39,14 @@ const PodcastDetails = ({
           <h2 className="text-16 font-bold text-white-1">{podcast?.views}</h2>
         </figure>
       </header>
+      <PodcastDetailPlayer
+        isOwner={isOwner}
+        podcastId={podcast._id}
+        audioUrl={podcast.audioUrl as string}
+        audioStorageId={podcast.audioStorageId as Id<"_storage">}
+        imageStorageId={podcast.imageStorageId as Id<"_storage">}
+        {...podcast}
+      />
       <p className="text-white-2 text-16 pb-8 pt-[45px] font-medium max-md:text-center">
         {podcast?.podcastDescription}
       </p>

@@ -12,6 +12,11 @@ const nextConfig = {
             hostname: "fearless-husky-341.convex.cloud",
             pathname: "**",
           },
+          {
+            protocol: "https",
+            hostname: "img.clerk.com",
+            pathname: "**",
+          },
         ],
       },
 };
