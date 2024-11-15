@@ -5,14 +5,25 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAudio } from "@/providers/AudioProvider";
 import { Progress } from "@/components/ui/progress";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const PodcastPlayer = () => {
   const { audio } = useAudio();
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [currentTime, setCurrentTime] = useState(23);
   const [duration, setDuration] = useState(100);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+
+  const togglePlayPause = () => {
+    if (audioRef.current?.paused) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    }
+  };
 
   return (
     <div
@@ -28,6 +39,7 @@ const PodcastPlayer = () => {
 
       <section className="glassmorphism-black flex h-[112px] w-full items-center justify-between px-4 max-md:justify-center max-md:gap-5 md:px-12 relative">
         <audio
+          ref={audioRef}
           src={audio?.audioUrl}
           className="hidden"
           onLoadedMetadata={() => {}}
@@ -68,7 +80,7 @@ const PodcastPlayer = () => {
             alt="Play"
             width={30}
             height={30}
-            onClick={() => {}}
+            onClick={togglePlayPause}
           />
           <div className="flex-center items-center gap-1.5">
             <h2 className="text-12 font-bold text-white-4">+5</h2>
