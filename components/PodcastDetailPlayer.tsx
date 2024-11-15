@@ -9,6 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import LoaderSpinner from "./LoaderSpinner";
+import { useAudio } from "@/providers/AudioProvider";
 
 const PodcastDetailPlayer = ({
   isOwner,
@@ -25,9 +26,19 @@ const PodcastDetailPlayer = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePodcast = useMutation(api.podcasts.deletePodcast);
   const router = useRouter();
+  const { audio, setAudio } = useAudio();
   const { toast } = useToast();
 
-  const handlePlay = () => {};
+  const handlePlay = () => {
+    setAudio({
+      title: podcastTitle,
+      audioUrl,
+      author,
+      imageUrl,
+      podcastId,
+    });
+    console.log(audio);
+  };
 
   const handleDelete = async () => {
     try {
