@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAudio } from "@/providers/AudioProvider";
 import { Progress } from "@/components/ui/progress";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const PodcastPlayer = () => {
   const { audio } = useAudio();
@@ -15,6 +15,7 @@ const PodcastPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
+  // Play and pause action
   const togglePlayPause = () => {
     if (audioRef.current?.paused) {
       audioRef.current.play();
@@ -24,6 +25,19 @@ const PodcastPlayer = () => {
       setIsPlaying(false);
     }
   };
+
+  // Autoplay when PodcastPlayer started
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audio?.audioUrl) {
+      if (audioElement) {
+        audioElement.play().then(() => setIsPlaying(true));
+      }
+    } else {
+      audioElement?.pause();
+      setIsPlaying(true);
+    }
+  }, [audio]);
 
   return (
     <div
