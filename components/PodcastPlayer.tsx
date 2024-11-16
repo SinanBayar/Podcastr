@@ -10,8 +10,8 @@ import { useEffect, useRef, useState } from "react";
 const PodcastPlayer = () => {
   const { audio } = useAudio();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [currentTime, setCurrentTime] = useState(23);
-  const [duration, setDuration] = useState(100);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
@@ -26,6 +26,19 @@ const PodcastPlayer = () => {
     }
   };
 
+  // Setting currentTime on audio
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    const updateCurrentTime = () => {
+      if (audioElement) {
+        setCurrentTime(audioElement.currentTime);
+      }
+    };
+    audioElement?.addEventListener("timeupdate", updateCurrentTime);
+    return () =>
+      audioElement?.removeEventListener("timeupdate", updateCurrentTime);
+  }, []);
+
   // Autoplay when PodcastPlayer started
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -38,6 +51,17 @@ const PodcastPlayer = () => {
       setIsPlaying(true);
     }
   }, [audio]);
+
+  // Setting audio duration
+  const handleLoadedMetaData = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+  };
 
   return (
     <div
@@ -56,8 +80,8 @@ const PodcastPlayer = () => {
           ref={audioRef}
           src={audio?.audioUrl}
           className="hidden"
-          onLoadedMetadata={() => {}}
-          onEnded={() => {}}
+          onLoadedMetadata={handleLoadedMetaData}
+          onEnded={handleAudioEnded}
         ></audio>
 
         <div className="flex items-center gap-4 max-md:hidden">
