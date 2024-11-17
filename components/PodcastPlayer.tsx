@@ -26,6 +26,14 @@ const PodcastPlayer = () => {
     }
   };
 
+  // Mute and unmute audio
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      setIsMuted((prev) => !prev);
+    }
+  };
+
   // Setting currentTime on audio
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -143,7 +151,7 @@ const PodcastPlayer = () => {
               className="cursor-pointer"
               width={24}
               height={24}
-              onClick={() => {}}
+              onClick={toggleMute}
             />
           </div>
         </div>
