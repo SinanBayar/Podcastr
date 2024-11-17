@@ -26,6 +26,32 @@ const PodcastPlayer = () => {
     }
   };
 
+  // Skip forward and rewind
+  const forward = () => {
+    const audioElement = audioRef.current;
+    if (
+      audioElement &&
+      audioElement.currentTime &&
+      audioElement.duration &&
+      audioElement.currentTime + 5 < audioElement.duration
+    ) {
+      audioElement.currentTime += 5;
+    }
+  };
+
+  const rewind = () => {
+    const audioElement = audioRef.current;
+    if (
+      audioElement &&
+      audioElement.currentTime &&
+      audioElement.currentTime - 5 > 0
+    ) {
+      audioElement.currentTime -= 5;
+    } else if (audioElement && audioElement.currentTime) {
+      audioElement.currentTime = 0;
+    }
+  };
+
   // Mute and unmute audio
   const toggleMute = () => {
     if (audioRef.current) {
@@ -117,7 +143,7 @@ const PodcastPlayer = () => {
               alt="rewind"
               width={24}
               height={24}
-              onClick={() => {}}
+              onClick={rewind}
             />
             <h2 className="text-12 font-bold text-white-4">-5</h2>
           </div>
@@ -135,7 +161,7 @@ const PodcastPlayer = () => {
               alt="forward"
               width={24}
               height={24}
-              onClick={() => {}}
+              onClick={forward}
             />
           </div>
         </div>
