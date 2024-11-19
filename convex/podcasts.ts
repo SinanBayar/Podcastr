@@ -106,3 +106,42 @@ export const deletePodcast = mutation({
     return await ctx.db.delete(args.podcastId);
   },
 });
+
+// This query will get the podcast by the search query.
+export const getPodcastBySearch = query({
+  args: {
+    search: v.string(),
+  },
+  handler: async (ctx, args) => {
+    if (args.search === "") {
+      return await ctx.db.query("podcasts").order("desc").take(10);
+    }
+
+    const authorSearch = await ctx.db
+      .query("podcasts")
+      .withSearchIndex("search_author", (q) => q.search("author", args.search))
+      .take(10);
+
+    if (authorSearch.length > 0) {
+      return authorSearch;
+    }
+
+    const titleSearch = await ctx.db
+      .query("podcasts")
+      .withSearchIndex("search_title", (q) =>
+        q.search("podcastTitle", args.search)
+      )
+      .take(10);
+
+    if (titleSearch.length > 0) {
+      return titleSearch;
+    }
+
+    return await ctx.db
+      .query("podcasts")
+      .withSearchIndex("search_body", (q) =>
+        q.search("podcastDescription", args.search)
+      )
+      .take(10);
+  },
+});
