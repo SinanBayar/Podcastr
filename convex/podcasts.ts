@@ -145,3 +145,16 @@ export const getPodcastBySearch = query({
       .take(10);
   },
 });
+
+// This query will get the podcast by the authorId.
+export const podcastDataByAuthorId = query({
+  args: {
+    authorId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("podcasts")
+      .filter((q) => q.eq(q.field("authorId"), args.authorId))
+      .collect();
+  },
+});
