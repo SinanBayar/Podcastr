@@ -27,9 +27,9 @@ const Profile = ({
         <h1 className="text-20 font-bold text-white-1">All Podcasts</h1>
         {podcastsData ? (
           <>
-            {podcastsData.length > 0 ? (
+            {podcastsData.podcasts.length > 0 ? (
               <div className="podcast_grid">
-                {podcastsData
+                {podcastsData.podcasts
                   ?.slice(0, 4)
                   .map(
                     ({ _id, podcastTitle, podcastDescription, imageUrl }) => (

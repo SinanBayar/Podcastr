@@ -146,15 +146,22 @@ export const getPodcastBySearch = query({
   },
 });
 
-// This query will get the podcast by the authorId.
+// This query will get the podcast and listeners by the authorId.
 export const podcastDataByAuthorId = query({
   args: {
     authorId: v.string(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const podcasts = await ctx.db
       .query("podcasts")
       .filter((q) => q.eq(q.field("authorId"), args.authorId))
       .collect();
+
+    const totalListeners = podcasts.reduce(
+      (sum, podcast) => sum + podcast.views,
+      0
+    );
+
+    return { podcasts, listeners: totalListeners };
   },
 });
