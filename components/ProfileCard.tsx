@@ -1,4 +1,8 @@
-import { ProfileCardProps } from "@/types";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useAudio } from "@/providers/AudioProvider";
+import { PodcastProps, ProfileCardProps } from "@/types";
 import { Button } from "./ui/button";
 import LoaderSpinner from "./LoaderSpinner";
 import Image from "next/image";
@@ -8,6 +12,26 @@ const ProfileCard = ({
   imageUrl,
   userFirstName,
 }: ProfileCardProps) => {
+  const { setAudio } = useAudio();
+  const [randomPodcast, setRandomPodcast] = useState<PodcastProps | null>(null);
+
+  const playRandomPodcast = () => {
+    const randomIndex = Math.floor(Math.random() * podcastData.podcasts.length);
+    setRandomPodcast(podcastData.podcasts[randomIndex]);
+  };
+
+  useEffect(() => {
+    if (randomPodcast) {
+      setAudio({
+        title: randomPodcast.podcastTitle,
+        audioUrl: randomPodcast.audioUrl || "",
+        imageUrl: randomPodcast.imageUrl || "",
+        author: randomPodcast.author,
+        podcastId: randomPodcast._id,
+      });
+    }
+  }, [setAudio, randomPodcast]);
+
   if (!imageUrl) return <LoaderSpinner />;
 
   return (
@@ -51,7 +75,7 @@ const ProfileCard = ({
         </figure>
         {podcastData?.podcasts.length > 0 && (
           <Button
-            onClick={() => {}}
+            onClick={playRandomPodcast}
             className="text-16 bg-orange-1 font-extrabold text-white-1"
           >
             <Image
