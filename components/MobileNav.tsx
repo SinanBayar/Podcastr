@@ -4,6 +4,9 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -28,6 +31,10 @@ const MobileNav = () => {
           />
         </SheetTrigger>
         <SheetContent side="left" className="border-none bg-black-1">
+          <SheetHeader>
+            <SheetTitle />
+            <SheetDescription />
+          </SheetHeader>
           <Link
             href="/"
             className="flex cursor-pointer item-center gap-1 pb-10 pl-4"
