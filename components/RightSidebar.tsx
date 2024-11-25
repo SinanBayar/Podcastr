@@ -4,6 +4,8 @@ import { SignedIn, UserButton, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
+import { useAudio } from "@/providers/AudioProvider";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "./Header";
@@ -14,11 +16,16 @@ const RightSidebar = () => {
   const { user } = useUser();
   const router = useRouter();
   const topPodcasters = useQuery(api.users.getTopUserByPodcastCount);
+  const { audio } = useAudio();
 
   if (!topPodcasters) return <LoaderSpinner />;
 
   return (
-    <section className="right_sidebar text-white-1">
+    <section
+      className={cn("right_sidebar text-white-1 h-lvh", {
+        "h-[calc(100vh-128px)]": audio?.audioUrl,
+      })}
+    >
       <SignedIn>
         <Link href={`/profile/${user?.id}`} className="flex gap-3 pb-12">
           <UserButton />
