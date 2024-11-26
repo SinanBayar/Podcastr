@@ -14,10 +14,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { sidebarLinks } from "@/constants";
+import { useClerk } from "@clerk/nextjs";
 
 const MobileNav = () => {
   const route = useRouter();
   const pathname = usePathname();
+  const { user } = useClerk();
   return (
     <section className="text-white-1">
       <Sheet>
@@ -50,11 +52,15 @@ const MobileNav = () => {
               <nav className="flex flex-col gap-6 text-white-1">
                 {sidebarLinks.map(({ route, label, imgURL }) => {
                   const isActive =
-                    pathname === route || pathname.startsWith(`${route}/`);
+                    pathname === route ||
+                    (label === "My Profile" &&
+                      pathname === `${route}/${user?.id}`);
                   return (
                     <SheetClose key={route} asChild>
                       <Link
-                        href={route}
+                        href={
+                          label == "My Profile" ? `${route}/${user?.id}` : route
+                        }
                         className={cn(
                           "flex gap-3 items-center py-4 max-lg:px-4 justify-start",
                           {
