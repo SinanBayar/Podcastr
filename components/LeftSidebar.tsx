@@ -14,6 +14,7 @@ const LeftSidebar = () => {
   const router = useRouter();
   const { signOut } = useClerk();
   const { audio } = useAudio();
+  const {user} = useClerk()
   return (
     <section
       className={cn("left_sidebar h-lvh", {
@@ -21,27 +22,23 @@ const LeftSidebar = () => {
       })}
     >
       <nav className="flex flex-col gap-6">
-        <Link
-          href="/"
-          className="flex cursor-pointer item-center gap-1 pb-10 max-lg:justify-center"
-        >
+        <Link href="/" className="flex cursor-pointer item-center gap-1 pb-10">
           <Image src="/icons/logo.svg" alt="logo" width={23} height={27} />
-          <h1 className="text-24 font-extrabold text-white max-lg:hidden">
+          <h1 className="text-24 font-extrabold text-white max-md:hidden">
             Podcastr
           </h1>
         </Link>
 
         {sidebarLinks.map(({ route, label, imgURL }) => {
           const isActive =
-            pathname === route || pathname.startsWith(`${route}/`);
+            pathname === route || (label === "My Profile" && pathname === `${route}/${user?.id}`);
           return (
             <Link
-              href={route}
+              href={label == "My Profile" ? `${route}/${user?.id}` : route}
               key={label}
-              className={cn(
-                "flex gap-3 items-center py-4 max-lg:px-4 justify-center lg:justify-start",
-                { "bg-nav-focus border-r-4 border-orange-1": isActive }
-              )}
+              className={cn("flex gap-3 items-center py-4", {
+                "bg-nav-focus border-r-4 border-orange-1": isActive,
+              })}
             >
               <Image src={imgURL} alt={label} width={24} height={24} />
               <p>{label}</p>
@@ -59,7 +56,7 @@ const LeftSidebar = () => {
       </SignedOut>
 
       <SignedIn>
-        <div className="flex-center w-full pb-14 max-lg:px-4 lg:pr-8">
+        <div className="flex-center w-full pb-14 pr-8 mt-10">
           <Button
             className="text-16 w-full bg-orange-1 font-extrabold"
             onClick={() => signOut(() => router.push("/"))}

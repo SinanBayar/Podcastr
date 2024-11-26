@@ -65,7 +65,7 @@ const PodcastDetailPlayer = ({
         />
         <div className="flex w-full flex-col gap-5 max-md:items-center md:gap-9">
           <article className="flex flex-col gap-2 max-md:items-center">
-            <h1 className="text-32 font-extrabold tracking-[-0.32px] text-white-1">
+            <h1 className="text-32 font-extrabold tracking-[-0.32px] text-white-1 max-md:text-center">
               {podcastTitle}
             </h1>
             <figure

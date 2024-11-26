@@ -57,7 +57,7 @@ const ProfileCard = ({
               Verified Creator
             </h2>
           </figure>
-          <h1 className="text-32 font-extrabold tracking-[-0.32px] text-white-1">
+          <h1 className="text-32 font-extrabold tracking-[-0.32px] text-white-1 max-md:text-center">
             {userFirstName}
           </h1>
         </div>
