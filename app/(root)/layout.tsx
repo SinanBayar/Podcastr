@@ -25,7 +25,7 @@ export default function RootLayout({
               />
               <MobileNav />
             </div>
-            <div className="flex flex-col md:pb-14">
+            <div className="flex flex-col pb-8 md:pb-14">
               <Toaster />
               {children}
             </div>
@@ -33,7 +33,7 @@ export default function RootLayout({
         </section>
         <RightSidebar />
       </main>
-      <PodcastPlayer/>
+      <PodcastPlayer />
     </div>
   );
 }
