@@ -42,9 +42,6 @@ const PodcastDetails = ({
       <PodcastDetailPlayer
         isOwner={isOwner}
         podcastId={podcast._id}
-        audioUrl={podcast.audioUrl as string}
-        audioStorageId={podcast.audioStorageId as Id<"_storage">}
-        imageStorageId={podcast.imageStorageId as Id<"_storage">}
         {...podcast}
       />
       <p className="text-white-2 text-16 pb-8 pt-[45px] font-medium max-md:text-center">
