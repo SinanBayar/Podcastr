@@ -50,14 +50,16 @@ export const createUser = internalMutation({
     clerkId: v.string(),
     email: v.string(),
     imageUrl: v.string(),
-    name: v.string(),
+    firstName: v.string(),
+    lastName: v.string(),
   },
-  handler: async (ctx, { clerkId, email, imageUrl, name }) => {
+  handler: async (ctx, { clerkId, email, imageUrl, firstName, lastName }) => {
     await ctx.db.insert("users", {
       clerkId,
       email,
       imageUrl,
-      name,
+      firstName,
+      lastName,
     });
   },
 });

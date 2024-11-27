@@ -27,7 +27,7 @@ const Profile = ({
       <ProfileCard
         podcastData={podcastsData!}
         imageUrl={user?.imageUrl!}
-        userFirstName={user?.name!}
+        userName={`${user?.firstName!} ${user?.lastName!}`}
       />
       <section className="flex flex-col mt-9 gap-5">
         <h1 className="text-20 font-bold text-white-1">All Podcasts</h1>

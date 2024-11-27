@@ -17,7 +17,8 @@ export interface TopPodcastersProps {
   email: string;
   imageUrl: string;
   clerkId: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   podcast: {
     podcastTitle: string;
     podcastId: Id<"podcasts">;
@@ -119,7 +120,7 @@ export interface CarouselProps {
 export interface ProfileCardProps {
   podcastData: ProfilePodcastProps;
   imageUrl: string;
-  userFirstName: string;
+  userName: string;
 }
 
 export type UseDotButtonType = {

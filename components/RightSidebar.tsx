@@ -58,13 +58,13 @@ const RightSidebar = () => {
               <figure className="flex items-center gap-2">
                 <Image
                   src={podcaster.imageUrl}
-                  alt={podcaster.name}
+                  alt={podcaster.firstName}
                   width={44}
                   height={44}
                   className="aspect-square rounded-lg"
                 ></Image>
                 <h2 className="text-14 font-semibold text-white-1">
-                  {podcaster.name}
+                  {podcaster.firstName} {podcaster.lastName}
                 </h2>
               </figure>
               <div className="flex items-center">

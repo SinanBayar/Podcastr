@@ -7,11 +7,7 @@ import { Button } from "./ui/button";
 import LoaderSpinner from "./LoaderSpinner";
 import Image from "next/image";
 
-const ProfileCard = ({
-  podcastData,
-  imageUrl,
-  userFirstName,
-}: ProfileCardProps) => {
+const ProfileCard = ({ podcastData, imageUrl, userName }: ProfileCardProps) => {
   const { setAudio } = useAudio();
   const [randomPodcast, setRandomPodcast] = useState<PodcastProps | null>(null);
 
@@ -58,7 +54,7 @@ const ProfileCard = ({
             </h2>
           </figure>
           <h1 className="text-32 font-extrabold tracking-[-0.32px] text-white-1 max-md:text-center">
-            {userFirstName}
+            {userName}
           </h1>
         </div>
         <figure className="flex gap-3 py-6">

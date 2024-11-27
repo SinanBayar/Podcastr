@@ -44,7 +44,7 @@ export const createPodcast = mutation({
     const podcast = await ctx.db.insert("podcasts", {
       ...args,
       user: user[0]._id,
-      author: user[0].name,
+      author: `${user[0].firstName} ${user[0].lastName}`,
       authorId: user[0].clerkId,
       authorImageUrl: user[0].imageUrl,
     });
