@@ -14,9 +14,13 @@ import LoaderSpinner from "./LoaderSpinner";
 
 const RightSidebar = () => {
   const { user } = useUser();
-  const router = useRouter();
-  const topPodcasters = useQuery(api.users.getTopUserByPodcastCount);
   const { audio } = useAudio();
+  const router = useRouter();
+  const topUserByPodcastCount = useQuery(api.users.getTopUserByPodcastCount);
+
+  const topPodcasters =
+    topUserByPodcastCount &&
+    topUserByPodcastCount?.filter((item: any) => item.totalPodcasts > 0);
 
   if (!topPodcasters) return <LoaderSpinner />;
 

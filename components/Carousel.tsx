@@ -28,11 +28,8 @@ const EmblaCarousel = ({ fansLikeDetail }: CarouselProps) => {
     emblaApi,
     onNavButtonClick
   );
-  const slides =
-    fansLikeDetail &&
-    fansLikeDetail?.filter((item: any) => item.totalPodcasts > 0);
 
-  if (!slides) return <LoaderSpinner />;
+  if (!fansLikeDetail) return <LoaderSpinner />;
 
   return (
     <section
@@ -40,7 +37,7 @@ const EmblaCarousel = ({ fansLikeDetail }: CarouselProps) => {
       ref={emblaRef}
     >
       <div className="flex">
-        {slides.slice(0, 5).map((item) => (
+        {fansLikeDetail.slice(0, 5).map((item) => (
           <figure
             key={item._id}
             className="carousel_box"
