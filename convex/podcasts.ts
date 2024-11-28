@@ -165,3 +165,17 @@ export const podcastDataByAuthorId = query({
     return { podcasts, listeners: totalListeners };
   },
 });
+
+// This mutation will update the views of the podcast.
+export const updatePodcastViews = mutation({
+  args: {
+    podcastId: v.id("podcasts"),
+  },
+  handler: async (ctx, args) => {
+    const podcast = await ctx.db.get(args.podcastId);
+    if (!podcast) {
+      throw new ConvexError("Podcast not found");
+    }
+    return await ctx.db.patch(args.podcastId, { views: podcast.views + 1 });
+  },
+});
