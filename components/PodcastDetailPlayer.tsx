@@ -10,6 +10,17 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import LoaderSpinner from "./LoaderSpinner";
 import { useAudio } from "@/providers/AudioProvider";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const PodcastDetailPlayer = ({
   isOwner,
@@ -107,18 +118,39 @@ const PodcastDetailPlayer = ({
             onClick={() => setIsDeleting((prev) => !prev)}
           />
           {isDeleting && (
-            <div
-              className="absolute -left-32 -top-2 z-10 flex w-32 cursor-pointer justify-center gap-2 rounded-md bg-black-6 py-1.5 hover:bg-black-2"
-              onClick={handleDelete}
-            >
-              <Image
-                src="/icons/delete.svg"
-                alt="Delete icon"
-                width={16}
-                height={16}
-              />
-              <h2 className="text-16 font-normal text-white-1">Delete</h2>
-            </div>
+            <AlertDialog>
+              <AlertDialogTrigger className="bg-black-5">
+                <div className="absolute -left-32 -top-2 z-10 flex w-32 cursor-pointer justify-center gap-2 rounded-md bg-black-6 py-1.5 hover:bg-black-2">
+                  <Image
+                    src="/icons/delete.svg"
+                    alt="Delete icon"
+                    width={16}
+                    height={16}
+                  />
+                  <h2 className="text-16 font-normal text-white-1">Delete</h2>
+                </div>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="text-white-1 bg-black-3">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you sure you want to delete this podcast?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your podcast.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-red-500 border border-white-1"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
       )}
